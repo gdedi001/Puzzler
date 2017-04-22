@@ -19,6 +19,8 @@ public class GameLogic : MonoBehaviour {
 
     private int currentSolveIndex = 0; //Temporary variable for storing the index that the player is solving for in the pattern.
 
+    public GameObject failAudioHolder;
+
 
     // Use this for initialization
     void Start() {
@@ -66,9 +68,9 @@ public class GameLogic : MonoBehaviour {
         //Step through the array for displaying the puzzle, and checking puzzle failure or success.
         startUI.SetActive(false);
         //eventSystem.SetActive(false);
-        iTween.MoveTo(player, playPoint.transform.position, 5f);
+        iTween.MoveTo(player, playPoint.transform.position, 8f);
         CancelInvoke("displayPattern");
-        InvokeRepeating("displayPattern", 3, puzzleSpeed); //Start running through the displaypattern function
+        InvokeRepeating("displayPattern", 5, puzzleSpeed); //Start running through the displaypattern function
         currentSolveIndex = 0; //Set our puzzle index at 0
 
     }
@@ -126,18 +128,16 @@ public class GameLogic : MonoBehaviour {
 
     public void puzzleFailure() { //Do this when the player gets it wrong
         Debug.Log("You've Failed, Resetting puzzle");
-
         currentSolveIndex = 0;
-
+        failAudioHolder.GetComponent<GvrAudioSource>().Play(); // play failure audio
         startPuzzle();
-
     }
 
     public void puzzleSuccess() { //Do this when the player gets it right
         iTween.MoveTo(player,
             iTween.Hash(
                 "position", restartPoint.transform.position,
-                "time", 2,
+                "time", 4,
                 "easetype", "linear",
                 "oncomplete", "finishingFlourish",
                 "oncompletetarget", this.gameObject
